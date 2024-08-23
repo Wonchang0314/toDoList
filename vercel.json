@@ -8,17 +8,9 @@
     {
       "src": "public/**",
       "use": "@vercel/static"
-    },
-    {
-      "src": "views/**",
-      "use": "@vercel/static"
     }
   ],
   "routes": [
-    {
-      "src": "/public/(.*)",
-      "dest": "/public/$1"
-    },
     {
       "src": "/(.*)",
       "dest": "index.js"
