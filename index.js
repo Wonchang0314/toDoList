@@ -27,9 +27,13 @@ async function start() {
   const client = await connectDB();
   await Post.injectDB(client);
 
-  app.listen(port, () => {
-    console.log("서버 실행중...");
-  });
+  if (process.env.VERCEL) {
+    console.log("Vercel 환경에서는 서버를 시작하지 않습니다.");
+  } else {
+    app.listen(port, () => {
+      console.log("서버 실행중...");
+    });
+  }
 
   process.on("SIGINT", async () => {
     try {
