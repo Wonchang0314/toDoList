@@ -25,10 +25,12 @@ class Post {
       .insertOne({ title, dateOfGoals, dateOfCreate, todoDetail });
   }
   static async delete(postId) {
-    return await db.collection("posts").deleteOne({ _id: postId });
+    return await db
+      .collection("posts")
+      .deleteOne({ _id: new ObjectId(postId) });
   }
   static async getOne(postId) {
-    return await db.collection("posts").findOne({ _id: postId });
+    return await db.collection("posts").findOne({ _id: new ObjectId(postId) });
   }
   static async update(postId, postData) {
     const { title, dateOfGoals, dateOfCreate, todoDetail } = postData;
