@@ -1,0 +1,51 @@
+<%- include('header.ejs') %>
+
+<main>
+	<h2>상세페이지</h2>
+	<div class="detail-container">
+		<p>id : <%=post._id %></p>
+		<p>할일 <%=post.title %></p>
+		<p>작성일 <%=post.dateOfCreate %></p>
+		<p>목표일 <%=post.dateOfGoals %></p>
+		<div>
+			<p>상세내용</p>
+			<p><%=post.todoDetail %></p>
+		</div>
+		<a href="/list">목록보기</a>
+		<button class="updateBtn" id="updateBtn" data-postnum="<%=post._id %>">
+			수정하기
+		</button>
+		<button class="deleteBtn" id="deleteBtn" data-postnum="<%=post._id %>">
+			삭제하기
+		</button>
+	</div>
+</main>
+<script>
+	const updateBtn = document.getElementById("updateBtn");
+	const deleteBtn = document.getElementById("deleteBtn");
+
+	updateBtn.addEventListener("click", (e) => {
+		const postId = e.target.dataset.postnum;
+		location.href = `/edit/${postId}`;
+	});
+
+	deleteBtn.addEventListener("click", async (e) => {
+		const postId = e.target.dataset.postnum;
+
+		try {
+			const res = await fetch(`/delete/${postId}`, {
+				method: "DELETE",
+			});
+			const data = await res.json();
+			console.log(data.success);
+			if (data.success) {
+				location.href = "/list";
+			} else {
+				alert(data.message || "삭제실패");
+			}
+		} catch (e) {
+			console.error(e);
+		}
+	});
+</script>
+<%- include('footer.ejs') %>

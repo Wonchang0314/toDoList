@@ -1,0 +1,66 @@
+<%- include('header.ejs') %>
+
+<main>
+	<h2>목록보기<%=posts.length %></h2>
+	<ul id="listCon">
+		<%- posts.length === 0 ? `
+		<li>리스트가 없어요</li>
+		` : posts.map(post => `
+		<li data-postnum="${post._id}" class="list">
+			<p class="title">할일 : ${post.title}</p>
+			<div>
+				<p>
+					작성일 : ${post.dateOfCreate} / 목표일 : ${post.dateOfGoals}
+				</p>
+				<button class="detailBtn" data-postnum="${post._id}">
+					세부사항보기
+				</button>
+				<button class="deleteBtn" data-postnum="${post._id}">
+					삭제
+				</button>
+			</div>
+		</li>
+		`).join("") %>
+	</ul>
+</main>
+<script>
+	const listCon = document.getElementById("listCon");
+
+	listCon.addEventListener("click", async (e) => {
+		const listItem = e.target.closest(".list");
+		if (e.target.tagName !== "BUTTON") {
+			return;
+		}
+		if (!listItem) {
+			return;
+		}
+
+		// 상수변수의 선언 위치가 중요
+		const postId = e.target.dataset.postnum;
+
+		if (e.target.classList.contains("deleteBtn")) {
+			try {
+				const res = await fetch(`/delete/${postId}`, {
+					method: "DELETE",
+				});
+				const data = await res.json();
+				console.log(data);
+				if (data.success) {
+					// 페이지 새로고침 대신 해당 항목만 제거
+					listItem.remove();
+					if (listCon.children.length === 0) {
+						// 삭제 후 리스트가 없을 때
+						listCon.innerHTML = "<li>리스트가 없어요</li>";
+					}
+				} else {
+					alert(data.message || "삭제실패");
+				}
+			} catch (e) {
+				console.error(e);
+			}
+		} else if (e.target.classList.contains("detailBtn")) {
+			location.href = `/detail/${postId}`;
+		}
+	});
+</script>
+<%- include('footer.ejs') %>
